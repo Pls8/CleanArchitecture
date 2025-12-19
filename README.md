@@ -58,7 +58,7 @@ Domain Layer (DAL) ← Application Layer (BLL) ← Infrastructure Layer (SLL) �
 - **Action**: Add folder `Models`
 - **Subfolders**: Create per domain entity (Users, Products, Orders, etc.)
   - **Dependencies**: Add NuGet packages:
-   - `Microsoft.EntityFrameworkCore.Tools`
+   - `Microsoft.EntityFrameworkCore`
    - `Microsoft.EntityFrameworkCore.SqlServer`
    - `Microsoft.AspNetCore.Identity.EntityFrameworkCore`
 
