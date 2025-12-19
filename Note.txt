@@ -1,0 +1,125 @@
+﻿
+1.Visual Studio 2022 > New Project > Blank Solution. 
+2.right-click Solution > add>class library[name: DAL(data access layer).projectname/Core layer]. 
+3.right-click Soultion > add>class library >[BLL(busness logic layer).projectname/application layer] 
+4. right-click Soultion > add>class library >[SLL(service logic layer).projectname] p.s. can be add other layer e.g. payment layer(separation of concerns)
+5.right-click Soultion > add>asp.net core MVC > [PLL(Presentation logic Layer).MVC.projectname] & for API  right-click Soultion > add>asp.net core API > [PLL(Presentation logic Layer).API.projectname] , CHECK > Enlist in .NET Aspire* 
+6.Project Reference: DAL < BLL < SLL < PLL.MVC&API&Mobile(if any), connect porject to each other:
+[BLL]>rightclick>add>Project Reference> check to [DAL],  [SLL]>rightclick>add>Project Reference> check to [BLL], [PLL.API]>rightclick>add>Project Reference> check to [BLL & SLL], [PLL.MVC]>rightclick>add>Project Reference> check to [BLL & SLL].
+7.[DAL] > add folder Models(create folder that will servie SRS e.g. Users, Product, Order), 
+In [DAL] add Dependencies(Microsoft.AspNetCore.Identity.EntityFrameworkCore, Microsoft.EntityFrameworkCore, Microsoft.EntityFrameworkCore.SqlServer *ONLY*)
+8.[BLL] add folder (Context) & (Config) & (DTOs), Context >add> AppDbContext.cs that inhernt from IdentityDbContext
+and have contructer DbContextOptions and OnModelCreating {ApplyConfigurationsFromAssembly} and DbSet<ModelsClasses>,
+The config will have Models IEntityTypeConfiguration<ModelsClasses> for each one
+9.For Microsoft.EntityFrameworkCore.Tools either install it in [PLL.MVC] or [PLL.API] 
+then set one of them as right-click > Startup Project, Apply (appsetting.json)  
+"ConnectionStrings"{path of mSQLs} and in (program.cs) add Builder service: 
+    1.builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration
+    .GetConnectionString("DefaultConnection"))); 
+    2.> builder.Services.AddIdentity<AppUserClass, IdentityRole>(options => 
+    { options.Password.RequireDigit = true; options.Password.RequireLowercase = true; })
+    .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+    3.app.UseAuthentication(); before  app.UseAuthorization();
+
+
+
+ Use Case Diagram
++----------------+       +-------------------+       +----------------+
+|   Customer     |       |   Administrator   |       |   Guest        |
++----------------+       +-------------------+       +----------------+
+       |                            |                       |
+       | 1. Browse Products         | 1. Manage Products    | 1. Browse Products
+       | 2. Add to Cart             | 2. Manage Orders      | 2. View Product Details
+       | 3. Place Order             | 3. Manage Users       | 3. Search Products
+       | 4. Track Order             | 4. View Dashboard     | 4. Register Account
+       | 5. Manage Profile          |                       |
+       | 6. Manage Wishlist         |                       |
+       +----------------+       +-------------------+       +----------------+
+
+
+
+
+Clean Architecture Layers (Onion Style)
+[Presentation Layer] → [Application Layer] → [Domain Layer] ← [Infrastructure Layer]
+        ↑                      ↑                     ↑                  ↑
+  MVC & Web API/PLL       UseCases/SLL       BusinessEntities/BLL     Data Access/DAL
+
+
+Clear separation of concerns:
+    Controllers → orchestrate
+    Services → business logic
+    Infrastructure → data access
+
+
+     OmanDigitalShop/
+├── 📁 OmanDigitalShop.Domain/           # Layer 1: Domain/Core/
+├── 📁 OmanDigitalShop.Application/      # Layer 2: Business Logic/
+├── 📁 OmanDigitalShop.Infrastructure/   # Layer 3: Data Access/
+├── 📁 OmanDigitalShop.Web/              # Layer 4: Presentation (MVC)
+├── 📁 OmanDigitalShop.API/              # Layer 4: Presentation (Web API)
+└── 📁 OmanDigitalShop.Tests/            # Tests
+
+
+
+
+
+
+DAL(data access layer) / Infrastructure / Domain Layer   → EF Core, Identity, Repositories
+BLL(Business logic layer) / Application → CQRS, DTOs, Policies
+PLL.MVC(Presentation logic  layer)   → Controllers, Program.cs, CQRS, DTOs
+PLL.API(Presentation logic  layer)   → Controllers, Program.cs
+Tests → Integration tests
+
+
+
+
+
+
+https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs
+Command Query Responsibility Segregation (CQRS) is a design pattern that segregates
+read and write operations for a data store into separate data models. This approach
+allows each model to be optimized independently and can improve the performance,
+scalability, and security of an application.
+
+
+
+
+
+
+Database Schema
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│    Categories   │     │    Products     │     │  ProductImages  │
+├─────────────────┤1   N├─────────────────┤     ├─────────────────┤
+│ PK Id INT       │◄────┤ PK Id INT       │────►│ PK Id INT       │
+│   Name          │     │   Name          │     │ FK ProductId    │
+│   Description   │     │   Description   │     │   ImageUrl      │
+│   ImageUrl      │     │   Price         │     │   DisplayOrder  │
+│   IsActive      │     │   StockQuantity │     └─────────────────┘
+│   CreatedAt     │     │   CategoryId FK │
+└─────────────────┘     │   Rating        │     ┌─────────────────┐
+                        │   IsFeatured    │     │     Orders      │
+┌─────────────────┐     │   IsActive      │     ├─────────────────┤
+│     AppUsers    │     │   CreatedAt     │     │ PK Id INT       │
+├─────────────────┤     └─────────────────┘     │   OrderNumber   │
+│ PK Id GUID      │          ▲                  │ FK UserId       │
+│   FirstName     │          │                  │   OrderDate     │
+│   LastName      │     ┌────┴────┐             │   Status        │
+│   Email         │     │         │             │   TotalAmount   │
+│   PhoneNumber   │     ▼         ▼             │  ShippingAddress│
+│   Address       │ ┌─────────┐  ┌─────────┐    └─────────────────┘
+│   City          │ │ CartItems│ │Wishlist │          │
+│   ProfileImage  │ ├─────────┤  │  Items  │          ▼
+│   CreatedAt     │ │ PK Id    │ ├─────────┤  ┌─────────────────┐
+└─────────────────┘ │ FK UserId│ │ PK Id    │ │   OrderItems    │
+        │           │ FK ProdId│ │ FK UserId│ ├─────────────────┤
+        ▼           │ Quantity │ │ FK ProdId│ │ PK Id INT       │
+┌─────────────────┐ │ AddedAt  │ │ AddedAt  │ │ FK OrderId      │
+│     Reviews     │ └─────────┘  └─────────┘  │ FK ProductId    │
+├─────────────────┤                           │   ProductName   │
+│ PK Id INT       │                           │   UnitPrice     │
+│ FK ProductId    │                           │   Quantity      │
+│ FK UserId       │                           │   TotalPrice    │
+│   Rating        │                           └─────────────────┘
+│   Comment       │
+│   CreatedAt     │
+└─────────────────┘
