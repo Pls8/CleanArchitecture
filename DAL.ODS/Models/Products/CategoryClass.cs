@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace DAL.ODS.Models.Products
 {
-    public class CategoryClass
+    public class CategoryClass : BaseEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public ICollection<ProductClass> Products { get; set; } = new HashSet<ProductClass>();
+        public string? Description { get; set; }        
+        public string? ImageUrl { get; set; }
+        public bool IsActive { get; set; } = true;
+        public virtual ICollection<ProductClass> Products { get; set; } = new HashSet<ProductClass>();
     }
 }

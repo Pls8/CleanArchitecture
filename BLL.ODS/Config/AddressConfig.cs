@@ -15,14 +15,11 @@ namespace BLL.ODS.Config
 
         public void Configure(EntityTypeBuilder<AddressClass> builder)
         {                           //  string ID | int
-            builder.HasKey(a => new { a.AddressId, a.Id });
-            //Composite Primary Key
-
-
-            builder.HasOne(a => a.AppUser)
-                   .WithMany(u => u.Addresses)
-                   .HasForeignKey(a => a.AddressId) // string ID of AppUser
-                   .OnDelete(DeleteBehavior.Cascade);
+            builder
+            .HasOne(a => a.AppUser)
+            .WithMany(u => u.Addresses)
+            .HasForeignKey(a => a.AppUserId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

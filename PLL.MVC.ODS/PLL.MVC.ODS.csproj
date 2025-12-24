@@ -11,12 +11,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.22" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BLL.ODS\BLL.ODS.csproj" />
     <ProjectReference Include="..\CleanArchitecture.ServiceDefaults\CleanArchitecture.ServiceDefaults.csproj" />
     <ProjectReference Include="..\SLL.ODS\SLL.ODS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Controllers\Views\Dashboard\" />
   </ItemGroup>
 
 </Project>

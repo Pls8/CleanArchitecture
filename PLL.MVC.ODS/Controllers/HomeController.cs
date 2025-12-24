@@ -1,27 +1,41 @@
-using System.Diagnostics;
+using BLL.ODS.Repositories;
+using DAL.ODS.Models.Products;
 using Microsoft.AspNetCore.Mvc;
 using PLL.MVC.ODS.Models;
+using SLL.ODS.Interfaces;
+using System.Diagnostics;
 
 namespace PLL.MVC.ODS.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly IProductService _productService;
+    private readonly ICategoryService _categoryService;
 
-    public HomeController(ILogger<HomeController> logger)
+
+    public HomeController(
+        IProductService productService,
+        ICategoryService categoryService)
     {
-        _logger = logger;
+        _productService = productService;
+        _categoryService = categoryService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var products = await _productService.GetActiveProductsAsync();
+        var categories = await _categoryService.GetActiveCategoriesAsync();
+
+        ViewBag.Categories = categories;
+        return View(products);
     }
+
 
     public IActionResult Privacy()
     {
         return View();
     }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()

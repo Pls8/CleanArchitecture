@@ -18,6 +18,8 @@ namespace BLL.ODS.Config
             builder.Property(c => c.Name)
                    .IsRequired();
 
+            builder.HasIndex(c => c.Name).IsUnique();
+
             builder.Property(c => c.Description);
 
             builder.HasMany(c => c.Products)

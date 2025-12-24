@@ -123,3 +123,57 @@ Database Schema
 │   Comment       │
 │   CreatedAt     │
 └─────────────────┘
+
+
+
+FINAL Architecture
+DAL
+ ├── Entities
+ ├── DbContext
+ └── Configurations
+BLL
+ ├── Repositories
+ └── UnitOfWork (optional)
+SLL
+ ├── Interfaces
+ ├── Services
+ ├── DTOs              ✅
+ ├── Validators        ✅
+ ├── Mapping           ✅ (AutoMapper)
+ └── Exceptions        ✅ (domain/app exceptions)
+PLL.API
+ ├── Controllers
+ ├── Middlewares       ✅ (Exception handling)
+ ├── Extensions        ✅ (JWT, Swagger, etc.)
+ └── Program.cs
+PLL.MVC (optional UI)
+
+
+
+
+
+
+
+
+
+
+Recommended Admin Architecture
+PLL.MVC
+ └── Areas
+     └── Admin
+         ├── Controllers
+         │   ├── DashboardController.cs
+         │   ├── ProductsController.cs
+         │   ├── CategoriesController.cs
+         │   ├── OrdersController.cs
+         │   └── UsersController.cs
+         ├── ViewModels
+         │   ├── ProductCreateVM.cs
+         │   ├── ProductEditVM.cs
+         │   └── UserRoleVM.cs
+         └── Views
+             ├── Dashboard
+             ├── Products
+             ├── Categories
+             ├── Orders
+             └── Users

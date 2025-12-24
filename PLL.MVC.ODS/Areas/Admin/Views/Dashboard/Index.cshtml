@@ -1,0 +1,251 @@
+﻿
+@using SLL.ODS.Models
+@* Areas/Admin/Views/Dashboard/Index.cshtml *@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+}
+<!-- Small boxes (Stat boxes) -->
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>@Model.TotalOrders</h3>
+                <p>Total Orders</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <a href="@Url.Action("Index", "Orders")" class="small-box-footer">
+                More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>@Model.TotalRevenue.ToString("C")</h3>
+                <p>Total Revenue</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <a href="#" class="small-box-footer">
+                More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>@Model.TotalProducts</h3>
+                <p>Total Products</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <a href="@Url.Action("Index", "Products")" class="small-box-footer">
+                More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <!-- ./col -->
+
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>@Model.TotalCategories</h3>
+                <p>Categories</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-tags"></i>
+            </div>
+            <a href="@Url.Action("Index", "Categories")" class="small-box-footer">
+                More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+<!-- /.row -->
+<!-- Main row -->
+<div class="row">
+    <!-- Left col -->
+    <section class="col-lg-7 connectedSortable">
+        <!-- Recent Orders Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Recent Orders</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>  <!-- Changed from Order # -->
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.RecentOrders.Any())
+                        {
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr>
+                                    <td>#@order.Id</td>  <!-- Using Id instead of OrderNumber -->
+                                    <td>@order.CustomerName</td>
+                                    <td>@order.TotalAmount.ToString("C")</td>
+                                    <td>
+                                        <span class="badge badge-info">@order.Status</span>
+                                    </td>
+                                    <td>@order.OrderDate.ToString("dd MMM yyyy")</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center">No recent orders</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </section>
+    <!-- /.Left col -->
+    <!-- Right col -->
+    <section class="col-lg-5 connectedSortable">
+        <!-- Low Stock Products -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Low Stock Products</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body p-0">
+                <ul class="products-list product-list-in-card pl-2 pr-2">
+                    @if (Model.LowStockProducts.Any())
+                    {
+                        @foreach (var product in Model.LowStockProducts)
+                        {
+                            <li class="item">
+                                <div class="product-img">
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="Product Image" class="img-size-50">
+                                    }
+                                    else
+                                    {
+                                        <img src="https://via.placeholder.com/50" alt="Product Image" class="img-size-50">
+                                    }
+                                </div>
+                                <div class="product-info">
+                                    <a href="javascript:void(0)" class="product-title">
+                                        @product.Name
+                                        <span class="badge badge-warning float-right">@product.StockQuantity left</span>
+                                    </a>
+                                    <span class="product-description">
+                                        @product.Price.ToString("C")
+                                    </span>
+                                </div>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="item">
+                            <div class="product-info">
+                                <span class="product-description">No low stock products</span>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer text-center">
+                <a href="@Url.Action("Index", "Products")" class="uppercase">View All Products</a>
+            </div>
+            <!-- /.card-footer -->
+        </div>
+        <!-- /.card -->
+    </section>
+    <!-- /.Right col -->
+</div>
+<!-- /.row -->
+<!-- Quick Action Cards -->
+<div class="row">
+    <div class="col-md-3 col-sm-6">
+        <div class="card bg-gradient-info">
+            <div class="card-body text-center">
+                <i class="fas fa-plus-circle fa-3x mb-3"></i>
+                <h5>Add New Product</h5>
+                <a href="@Url.Action("Create", "Products")" class="btn btn-light btn-sm mt-2">Create</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card bg-gradient-success">
+            <div class="card-body text-center">
+                <i class="fas fa-tags fa-3x mb-3"></i>
+                <h5>Manage Categories</h5>
+                <a href="@Url.Action("Index", "Categories")" class="btn btn-light btn-sm mt-2">Manage</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card bg-gradient-warning">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-bar fa-3x mb-3"></i>
+                <h5>View Reports</h5>
+                <a href="#" class="btn btn-light btn-sm mt-2">View</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card bg-gradient-danger">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <h5>User Management</h5>
+                <a href="@Url.Action("Index", "Users")" class="btn btn-light btn-sm mt-2">Manage</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Initialize AdminLTE components
+            $('[data-widget="collapse"]').click(function() {
+                $(this).closest('.card').toggleClass('collapsed-card');
+            });
+        });
+    </script>
+}

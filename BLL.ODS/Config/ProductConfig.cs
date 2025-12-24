@@ -14,16 +14,21 @@ namespace BLL.ODS.Config
     {
         public void Configure(EntityTypeBuilder<ProductClass> builder)
         {
-            builder.HasKey(p => p.Id);
+            builder
+           .HasOne(p => p.Category)
+           .WithMany(c => c.Products)
+           .HasForeignKey(p => p.CategoryId)
+           .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Property(p => p.Name)
-                   .IsRequired();
+            // العلاقة بين Product و OrderItem
+            builder
+                .HasMany(p => p.OrderItems)
+                .WithOne(oi => oi.Product)
+                .HasForeignKey(oi => oi.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Property(p => p.Price)
-                   .HasColumnType("decimal(18,2)");
-
-            builder.Property(p => p.DiscountType)
-                   .HasConversion<int>();
+            // Index على اسم المنتج
+            builder.HasIndex(p => p.Name);
 
 
 

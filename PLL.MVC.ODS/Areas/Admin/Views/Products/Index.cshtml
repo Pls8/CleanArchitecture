@@ -1,0 +1,67 @@
+﻿@using DAL.ODS.Models.Products
+@* Areas/Admin/Views/Products/Index.cshtml *@
+@model IEnumerable<ProductClass>
+@{
+    ViewData["Title"] = "Products Management";
+    Layout = "_AdminLayout";
+}
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Products Management</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Product List</h3>
+                        <div class="card-tools">
+                            <a asp-action="Create" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus-circle"></i> Add New
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="productsTable" class="table table-bordered table-striped">
+                            <!-- Your table content -->
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Check if DataTable is already initialized
+            if ($.fn.DataTable.isDataTable('#productsTable')) {
+                $('#productsTable').DataTable().destroy();
+            }
+
+            // Initialize DataTable
+            $('#productsTable').DataTable({
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print"]
+            });
+        });
+    </script>
+}
