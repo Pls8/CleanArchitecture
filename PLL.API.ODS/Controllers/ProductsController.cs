@@ -1,5 +1,6 @@
 ﻿using DAL.ODS.Models.Products;
 using Microsoft.AspNetCore.Mvc;
+using SLL.ODS.DTOs;
 using SLL.ODS.Interfaces;
 
 namespace PLL.API.ODS.Controllers
@@ -13,21 +14,63 @@ namespace PLL.API.ODS.Controllers
             _productService = productService;
         }
 
-        // GET: api/Products
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductClass>>> GetAll()
+        // GET: api/Products WithOut DTOs
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<ProductClass>>> GetAll()
+        //{
+        //    var products = await _productService.GetAllProductsAsync();
+        //    return Ok(products);
+        //}
+
+        //With DTOs
+        [HttpGet]   //added 1-3-2026
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
         {
             var products = await _productService.GetAllProductsAsync();
-            return Ok(products);
+
+            var result = products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                StockQuantity = p.StockQuantity,
+                IsActive = p.IsActive,
+                CategoryId = p.CategoryId,
+                CategoryName = p.Category!.Name
+            });
+
+            return Ok(result);
         }
 
+
         // GET: api/Products/active
+        //[HttpGet("active")]
+        //public async Task<ActionResult<IEnumerable<ProductClass>>> GetActive()
+        //{
+        //    var products = await _productService.GetActiveProductsAsync();
+        //    return Ok(products);
+        //}
         [HttpGet("active")]
-        public async Task<ActionResult<IEnumerable<ProductClass>>> GetActive()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetActive()
         {
             var products = await _productService.GetActiveProductsAsync();
-            return Ok(products);
+
+            var result = products.Select(p => new ProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                StockQuantity = p.StockQuantity,
+                ImageUrl = p.ImageUrl,
+                IsActive = p.IsActive,
+                CategoryId = p.CategoryId
+            });
+
+            return Ok(result);
         }
+
 
         // GET: api/Products/{id}
         [HttpGet("{id:int}")]
@@ -61,17 +104,46 @@ namespace PLL.API.ODS.Controllers
         }
 
         // POST: api/Products
-        [HttpPost]
-        public async Task<ActionResult<ProductClass>> Create(ProductClass product)
-        {
-            var createdProduct = await _productService.CreateProductAsync(product);
+        //[HttpPost]
+        //public async Task<ActionResult<ProductClass>> Create(ProductClass product)
+        //{
+        //    var createdProduct = await _productService.CreateProductAsync(product);
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = createdProduct.Id },
-                createdProduct
-            );
+        //    return CreatedAtAction(
+        //        nameof(GetById),
+        //        new { id = createdProduct.Id },
+        //        createdProduct
+        //    );
+        //}
+
+        [HttpPost]  //added 1-3-2026
+        public async Task<ActionResult<ProductDto>> Create(ProductCreateDto dto)
+        {
+            var product = new ProductClass
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Price = dto.Price,
+                StockQuantity = dto.StockQuantity,
+                CategoryId = dto.CategoryId
+            };
+
+            var created = await _productService.CreateProductAsync(product);
+
+            var result = new ProductDto
+            {
+                Id = created.Id,
+                Name = created.Name,
+                Price = created.Price,
+                StockQuantity = created.StockQuantity,
+                IsActive = created.IsActive,
+                CategoryId = created.CategoryId,
+                CategoryName = created.Category!.Name
+            };
+
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
+
 
         // PUT: api/Products/{id}
         [HttpPut("{id:int}")]

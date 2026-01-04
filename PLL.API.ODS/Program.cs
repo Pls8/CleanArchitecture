@@ -40,13 +40,42 @@ public class Program
                                                                                                      //
         //AddScoped is used to register services for Dependency Injection (DI)                       //
         //in an ASP.NET Core API, and it controls how long an instance of a service lives.           //
+                                                                                                     //
         builder.Services.AddScoped<IProductRepository, ProductRepository>();                         //
         builder.Services.AddScoped<IProductService, ProductService>();                               //
+                                                                                                     //
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();                       //
+        builder.Services.AddScoped<ICategoryService, CategoryService>();                             //
+                                                                                                     //
         //Lifetime	        Description	                    Typical Use                              //
         //AddTransient	    New instance every time	        Lightweight, stateless services          //
         //AddScoped	One     instance per request	        Repositories, business services          //
         //AddSingleton	    One instance for app lifetime	Caching, configuration                   //
         //-------------------------------------------------------------------------------------------//
+        
+
+
+        //something about blocking! added 1-3-2026
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAngular",
+                policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                }
+            );
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
+
 
 
 
@@ -72,6 +101,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseCors("AllowAngular");
 
         app.UseAuthentication();
         app.UseAuthorization();

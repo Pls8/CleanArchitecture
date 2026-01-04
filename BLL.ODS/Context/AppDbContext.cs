@@ -29,7 +29,52 @@ namespace BLL.ODS.Context
         {
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            //Config
+
+            #region seed data
+            //builder.Entity<CategoryClass>().HasData(
+            //    new CategoryClass
+            //    {
+            //        Id = 1,
+            //        Name = "Electronics",
+            //        Description = "Electronic devices",
+            //        ImageUrl = null,
+            //        IsActive = true
+            //    },
+            //    new CategoryClass
+            //    {
+            //        Id = 2,
+            //        Name = "Accessories",
+            //        Description = "Computer accessories",
+            //        ImageUrl = null,
+            //        IsActive = true
+            //    }
+            //);
+
+            //builder.Entity<ProductClass>().HasData(
+            //    new ProductClass
+            //    {
+            //        Id = 1,
+            //        Name = "Keyboard",
+            //        Description = "Mechanical keyboard",
+            //        Price = 49.99m,
+            //        StockQuantity = 50,
+            //        IsActive = true,
+            //        CategoryId = 1,
+            //        CreatedAt = DateTime.Now
+            //    },
+            //    new ProductClass
+            //    {
+            //        Id = 2,
+            //        Name = "Mouse",
+            //        Description = "Wireless mouse",
+            //        Price = 29.99m,
+            //        StockQuantity = 100,
+            //        IsActive = true,
+            //        CategoryId = 2,
+            //        CreatedAt = DateTime.Now
+            //    }
+            //);
+            #endregion
 
             #region Config
             //builder.Entity<ProductClass>()

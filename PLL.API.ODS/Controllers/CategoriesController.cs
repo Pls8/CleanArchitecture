@@ -1,5 +1,6 @@
 ﻿using DAL.ODS.Models.Products;
 using Microsoft.AspNetCore.Mvc;
+using SLL.ODS.DTOs;
 using SLL.ODS.Interfaces;
 
 namespace PLL.API.ODS.Controllers
@@ -36,15 +37,44 @@ namespace PLL.API.ODS.Controllers
             return Ok(category);
         }
 
-        [HttpGet("{id:int}/products")]
-        public async Task<ActionResult<CategoryClass>> GetWithProducts(int id)
+        //[HttpGet("{id:int}/products")]
+        //public async Task<ActionResult<CategoryClass>> GetWithProducts(int id)
+        //{
+        //    var category = await _categoryService.GetCategoryWithProductsAsync(id);
+        //    if (category == null)
+        //        return NotFound();
+
+        //    return Ok(category);
+        //}
+        [HttpGet("{id:int}/products")] //added 1-3-2026
+        public async Task<ActionResult<CategoryWithProductsDto>> GetWithProducts(int id)
         {
             var category = await _categoryService.GetCategoryWithProductsAsync(id);
             if (category == null)
                 return NotFound();
 
-            return Ok(category);
+            var result = new CategoryWithProductsDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                ImageUrl = category.ImageUrl,
+                IsActive = category.IsActive,
+                Products = category.Products.Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    StockQuantity = p.StockQuantity,
+                    IsActive = p.IsActive,
+                    CategoryId = p.CategoryId,
+                    CategoryName = category.Name
+                }).ToList()
+            };
+
+            return Ok(result);
         }
+
 
         [HttpPost]
         public async Task<ActionResult<CategoryClass>> Create(CategoryClass category)

@@ -1,4 +1,5 @@
 ﻿using DAL.ODS.Models.Order;
+using SLL.ODS.DTOs;
 using SLL.ODS.Models;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,12 @@ namespace SLL.ODS.Interfaces
         Task<IEnumerable<OrderClass>> GetOrdersByStatusAsync(OrderStatusEnums status);
 
         Task<OrderClass> CreateOrderAsync(OrderClass order);
+        ////this has use of DTO, insted to change controller API
+        //Task<OrderClass> CreateOrderAsync(
+        //    string userId,
+        //    List<CreateOrderItemDto> items
+        //);
+
         Task UpdateOrderStatusAsync(int orderId, OrderStatusEnums newStatus);
         Task CancelOrderAsync(int orderId);
 
