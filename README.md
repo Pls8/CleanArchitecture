@@ -264,3 +264,16 @@ They help you:
 
 ---
 
+
+##  AI Prompt Template for Future Projects
+
+> "Create a .NET 8 solution following Clean Architecture with 5 projects:
+> 1. **DAL**: Contains `BaseEntity` (Id), Domain Models, and Repository Interfaces.
+> 2. **BLL**: Contains `ApplicationDbContext` (EF Core), Migrations, and Concrete Repositories implementing a `GenericRepository<T>`.
+> 3. **SLL**: Contains Service Interfaces and Services that wrap Repositories for business logic.
+> 4. **PLL.MVC**: An ASP.NET Core MVC project with Identity, Admin Area, and Account management.
+> 5. **PLL.Api**: A Web API project with JWT Authentication and Swagger.
+> 
+> Use SQL Server. Implement Identity with a custom `AppUser` class. Ensure Dependency Injection is correctly set up in both PLL projects. Include a Seeding mechanism for 'Admin' and 'Customer' roles.
+> 
+> My idea for the specific domain is: [INSERT YOUR IDEA HERE]"
